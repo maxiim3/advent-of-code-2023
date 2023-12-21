@@ -1,0 +1,10 @@
+array_width = 60
+max_width = 80
+brace_style = "PreferSameLine"
+combine_control_expr = false
+fn_args_layout = "Vertical"
+error_on_line_overflow = true
+error_on_unformatted = true
+version = "Two"
+fn_call_style = "Block"
+chain_splitter_style = "All"
