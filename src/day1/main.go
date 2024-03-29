@@ -10,28 +10,55 @@ import (
 
 func main() {
 	fmt.Println("Hello, Day 1!")
-	file, err := os.ReadFile("./src/day1/test-2.txt")
 
-	if err != nil {
-		panic("Cannot read the file ")
-	}
+	file := readFile("./src/day1/test-2.txt")
 
-	lines := strings.Split(string(file), "\n")
+	lines := readLines(file)
 
+	// Accumulatored result
 	acc := 0
-	for i := 0; i < len(lines); i++ {
-		lines[i] = transformSpelledNumbers(lines[i])
-		num := filterNumbers(lines[i])
-		digits := extractFirstAndLast(num)
-		acc += digits
+
+	for _, currentLine := range lines {
+
+		firstItem, lastItem := string(currentLine[0]), string(currentLine[len(currentLine)-1])
+		_, errFirst := strconv.Atoi(firstItem)
+		_, errLast := strconv.Atoi(lastItem)
+
+		if errFirst == nil && errLast == nil {
+			digits := mergeDigits([]string{firstItem, lastItem})
+			acc += digits
+		} else {
+			currentLine = replaceSpelledByNumbers(currentLine)
+			nums := extractNumbersFromLine(currentLine)
+			digits := mergeDigits(nums)
+			acc += digits
+		}
+
 	}
 
 	fmt.Println(acc)
 
 }
 
-func transformSpelledNumbers(line string) string {
-	hash := map[string]string{
+func readFile(path string) []byte {
+	file, err := os.ReadFile(path)
+
+	if err != nil {
+		panic("Cannot read the file ")
+	}
+
+	return file
+}
+
+func readLines(file []byte) []string {
+	lines := strings.Split(string(file), "\n")
+
+	return lines
+}
+
+// Replace the spelled numbers from the line into numbers
+func replaceSpelledByNumbers(line string) string {
+	dictionary := map[string]string{
 		"one":   "1",
 		"two":   "2",
 		"three": "3",
@@ -45,25 +72,30 @@ func transformSpelledNumbers(line string) string {
 
 	regEx := regexp.MustCompile("one|two|three|four|five|six|seven|eight|nine")
 
-	matchedItems := regEx.FindAllString(line, 100)
+	matchedItems := regEx.FindAllString(line, 10)
 
 	if matchedItems == nil {
 		return line
 	}
 
 	for _, match := range matchedItems {
-		re := regexp.MustCompile(match)
-		line = re.ReplaceAllString(line, hash[match])
+		line = strings.ReplaceAll(line, match, dictionary[match])
 	}
 
 	return line
 }
 
-func filterNumbers(slice string) []string {
+// Filter out the numbers from the line
+//
+// Returns a slice of numbers as string type
+func extractNumbersFromLine(line string) []string {
 	nums := []string{}
-	for j := 0; j < len(slice); j++ {
-		item := string(slice[j])
 
+	for j := 0; j < len(line); j++ {
+		// Cast element byte -> string
+		item := string(line[j])
+
+		// Cast to integer
 		if _, err := strconv.Atoi(item); err == nil {
 			nums = append(nums, item)
 		}
@@ -71,10 +103,18 @@ func filterNumbers(slice string) []string {
 	return nums
 }
 
-func extractFirstAndLast(nums []string) int {
+// Create a digit from the first and last element of the slice : { X Y W Z } -> XZ
+//
+// # If the slice contains no item, returns 0
+//
+// Ifgf there is only one element in the slice, return a digit from the element : { X } -> XX
+func mergeDigits(nums []string) int {
+	fmt.Println(nums)
+
 	if len(nums) == 0 {
 		return 0
 	}
+
 	if len(nums) > 1 {
 		first := nums[0]
 		last := nums[len(nums)-1]
