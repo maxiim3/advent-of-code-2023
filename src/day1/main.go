@@ -11,12 +11,12 @@ import (
 func main() {
 	fmt.Println("Hello, Day 1!")
 
-	file := readFile("./src/day1/test-2.txt")
+	file := readFile("./src/day1/input.txt")
 
 	lines := readLines(file)
 
 	// Accumulatored result
-	acc := 0
+	var acc int
 
 	for _, currentLine := range lines {
 
@@ -25,7 +25,8 @@ func main() {
 		_, errLast := strconv.Atoi(lastItem)
 
 		if errFirst == nil && errLast == nil {
-			digits := mergeDigits([]string{firstItem, lastItem})
+			digits := mergeDigits(Digits{
+				values: [2]string{firstItem, lastItem}})
 			acc += digits
 		} else {
 			currentLine = replaceSpelledByNumbers(currentLine)
@@ -85,22 +86,31 @@ func replaceSpelledByNumbers(line string) string {
 	return line
 }
 
+type Digits struct {
+	values [2]string
+}
+
 // Filter out the numbers from the line
 //
 // Returns a slice of numbers as string type
-func extractNumbersFromLine(line string) []string {
-	nums := []string{}
+func extractNumbersFromLine(line string) Digits {
+	allNums := []string{}
 
-	for j := 0; j < len(line); j++ {
-		// Cast element byte -> string
-		item := string(line[j])
-
-		// Cast to integer
-		if _, err := strconv.Atoi(item); err == nil {
-			nums = append(nums, item)
+	for _, chars := range line {
+		chars := string(chars)
+		if _, err := strconv.Atoi(chars); err == nil {
+			allNums = append(allNums, chars)
 		}
 	}
-	return nums
+
+	switch len(allNums) {
+	case 0:
+		return Digits{values: [2]string{"0", "0"}}
+	case 1:
+		return Digits{values: [2]string{allNums[0], allNums[0]}}
+	default:
+		return Digits{values: [2]string{allNums[0], allNums[len(allNums)-1]}}
+	}
 }
 
 // Create a digit from the first and last element of the slice : { X Y W Z } -> XZ
@@ -108,33 +118,14 @@ func extractNumbersFromLine(line string) []string {
 // # If the slice contains no item, returns 0
 //
 // Ifgf there is only one element in the slice, return a digit from the element : { X } -> XX
-func mergeDigits(nums []string) int {
-	fmt.Println(nums)
+func mergeDigits(digit Digits) int {
 
-	if len(nums) == 0 {
-		return 0
+	first, last := digit.values[0], digit.values[1]
+	digits, err := strconv.Atoi(fmt.Sprint(first, last))
+
+	if err != nil {
+		panic(err)
 	}
 
-	if len(nums) > 1 {
-		first := nums[0]
-		last := nums[len(nums)-1]
-
-		digits, err := strconv.Atoi(fmt.Sprint(first, last))
-
-		if err != nil {
-			panic(err)
-		}
-
-		return digits
-
-	} else {
-
-		digits, err := strconv.Atoi(fmt.Sprint(nums[0], nums[0]))
-
-		if err != nil {
-			panic(err)
-		}
-
-		return digits
-	}
+	return digits
 }
