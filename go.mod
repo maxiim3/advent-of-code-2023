@@ -1,3 +1,3 @@
-module maxiim3.com/advent-of-code-2023
+module github.com/maxiim3/aoc2023
 
-go 1.21.5
+go 1.22.1

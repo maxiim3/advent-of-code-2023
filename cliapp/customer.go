@@ -1,4 +1,4 @@
-package main
+package cliapp
 
 import (
 	"bufio"
@@ -24,7 +24,7 @@ func createScanner() Scanner {
 	return Scanner{reader: bufio.NewReader(os.Stdin)}
 }
 
-func main() {
+func Run() {
 
 	scanner := createScanner()
 

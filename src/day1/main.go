@@ -2,23 +2,22 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/maxiim3/aoc2023/src/fileutils"
 )
 
 func main() {
 	fmt.Println("Hello, Day 1!")
 
-	file := readFile("./src/day1/input.txt")
-
-	lines := readLines(file)
+	parsed := fileutils.ParseFile("./src/day1/input.txt")
 
 	// Accumulatored result
 	var acc int
 
-	for _, currentLine := range lines {
+	for _, currentLine := range parsed.Lines {
 
 		firstItem, lastItem := string(currentLine[0]), string(currentLine[len(currentLine)-1])
 		_, errFirst := strconv.Atoi(firstItem)
@@ -39,22 +38,6 @@ func main() {
 
 	fmt.Println(acc)
 
-}
-
-func readFile(path string) []byte {
-	file, err := os.ReadFile(path)
-
-	if err != nil {
-		panic("Cannot read the file ")
-	}
-
-	return file
-}
-
-func readLines(file []byte) []string {
-	lines := strings.Split(string(file), "\n")
-
-	return lines
 }
 
 // Replace the spelled numbers from the line into numbers

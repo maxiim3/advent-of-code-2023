@@ -5,7 +5,7 @@ import * as fs from "fs";
 type DataCell = string
 type Matrix = DataCell[][]
 
-const file = fs.readFileSync("./src/day3/sample.txt", {encoding: "utf-8"});
+const file = fs.readFileSync("./src/day3/input.txt", { encoding: "utf-8" });
 
 const lines = file.split("\n")
 lines.pop()
@@ -101,41 +101,41 @@ class Stream {
 function runPartOne(matrix: Matrix) {
     const packages: Stream[] = []
     matrix.forEach((rowValue, rowIndex) => {
-            const stream = new Stream()
-            packages.push(stream)
+        const stream = new Stream()
+        packages.push(stream)
 
-            rowValue.forEach((cell, index) => {
-                const vectors: Vectors = {
-                    current: new Vector(index, rowIndex),
-                    next: new Vector(index + 1, rowIndex),
-                    top: new Vector(index, rowIndex - 1),
-                    bottom: new Vector(index, rowIndex + 1),
-                    topLeft: new Vector(index - 1, rowIndex - 1),
-                    topRight: new Vector(index + 1, rowIndex - 1),
-                    bottomLeft: new Vector(index - 1, rowIndex + 1),
-                    bottomRight: new Vector(index + 1, rowIndex + 1),
-                    previous: new Vector(index - 1, rowIndex)
-                } as const
+        rowValue.forEach((cell, index) => {
+            const vectors: Vectors = {
+                current: new Vector(index, rowIndex),
+                next: new Vector(index + 1, rowIndex),
+                top: new Vector(index, rowIndex - 1),
+                bottom: new Vector(index, rowIndex + 1),
+                topLeft: new Vector(index - 1, rowIndex - 1),
+                topRight: new Vector(index + 1, rowIndex - 1),
+                bottomLeft: new Vector(index - 1, rowIndex + 1),
+                bottomRight: new Vector(index + 1, rowIndex + 1),
+                previous: new Vector(index - 1, rowIndex)
+            } as const
 
 
-                let hasChanged = false;
-                if (
-                    (index === 0)
-                    || (vectors.previous.isNumber && !vectors.current.isNumber)
-                    || (!vectors.previous.isNumber && vectors.current.isNumber)
-                ) {
+            let hasChanged = false;
+            if (
+                (index === 0)
+                || (vectors.previous.isNumber && !vectors.current.isNumber)
+                || (!vectors.previous.isNumber && vectors.current.isNumber)
+            ) {
 
-                    hasChanged = true
-                }
+                hasChanged = true
+            }
 
-                if (hasChanged && vectors.current.isNumber) {
-                    stream.createChunk()
-                }
-                if (vectors.current.isNumber) {
-                    stream.handleLastChunk(vectors)
-                }
-            })
-        }
+            if (hasChanged && vectors.current.isNumber) {
+                stream.createChunk()
+            }
+            if (vectors.current.isNumber) {
+                stream.handleLastChunk(vectors)
+            }
+        })
+    }
     )
     let partNumbers: number[] = []
     packages.forEach(stream => {
