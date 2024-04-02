@@ -11,38 +11,28 @@ import (
 
 func main() {
 	fmt.Println("Hello, Day 1!")
+	file, err := os.ReadFile("./src/day1/test-2.txt")
 
-	parsed := fileutils.ParseFile("./src/day1/input.txt")
+	if err != nil {
+		panic("Cannot read the file ")
+	}
 
-	// Accumulatored result
-	var acc int
+	lines := strings.Split(string(file), "\n")
 
-	for _, currentLine := range parsed.Lines {
-
-		firstItem, lastItem := string(currentLine[0]), string(currentLine[len(currentLine)-1])
-		_, errFirst := strconv.Atoi(firstItem)
-		_, errLast := strconv.Atoi(lastItem)
-
-		if errFirst == nil && errLast == nil {
-			digits := mergeDigits(Digits{
-				values: [2]string{firstItem, lastItem}})
-			acc += digits
-		} else {
-			currentLine = replaceSpelledByNumbers(currentLine)
-			nums := extractNumbersFromLine(currentLine)
-			digits := mergeDigits(nums)
-			acc += digits
-		}
-
+	acc := 0
+	for i := 0; i < len(lines); i++ {
+		lines[i] = transformSpelledNumbers(lines[i])
+		num := filterNumbers(lines[i])
+		digits := extractFirstAndLast(num)
+		acc += digits
 	}
 
 	fmt.Println(acc)
 
 }
 
-// Replace the spelled numbers from the line into numbers
-func replaceSpelledByNumbers(line string) string {
-	dictionary := map[string]string{
+func transformSpelledNumbers(line string) string {
+	hash := map[string]string{
 		"one":   "1",
 		"two":   "2",
 		"three": "3",
@@ -69,42 +59,27 @@ func replaceSpelledByNumbers(line string) string {
 	return line
 }
 
-type Digits struct {
-	values [2]string
-}
+func filterNumbers(slice string) []string {
+	nums := []string{}
+	for j := 0; j < len(slice); j++ {
+		item := string(slice[j])
 
-// Filter out the numbers from the line
-//
-// Returns a slice of numbers as string type
-func extractNumbersFromLine(line string) Digits {
-	allNums := []string{}
-
-	for _, chars := range line {
-		chars := string(chars)
-		if _, err := strconv.Atoi(chars); err == nil {
-			allNums = append(allNums, chars)
+		if _, err := strconv.Atoi(item); err == nil {
+			nums = append(nums, item)
 		}
 	}
-
-	switch len(allNums) {
-	case 0:
-		return Digits{values: [2]string{"0", "0"}}
-	case 1:
-		return Digits{values: [2]string{allNums[0], allNums[0]}}
-	default:
-		return Digits{values: [2]string{allNums[0], allNums[len(allNums)-1]}}
-	}
+	return nums
 }
 
-// Create a digit from the first and last element of the slice : { X Y W Z } -> XZ
-//
-// # If the slice contains no item, returns 0
-//
-// Ifgf there is only one element in the slice, return a digit from the element : { X } -> XX
-func mergeDigits(digit Digits) int {
+func extractFirstAndLast(nums []string) int {
+	if len(nums) == 0 {
+		return 0
+	}
+	if len(nums) > 1 {
+		first := nums[0]
+		last := nums[len(nums)-1]
 
-	first, last := digit.values[0], digit.values[1]
-	digits, err := strconv.Atoi(fmt.Sprint(first, last))
+		digits, err := strconv.Atoi(fmt.Sprint(first, last))
 
 	if err != nil {
 		panic(err)

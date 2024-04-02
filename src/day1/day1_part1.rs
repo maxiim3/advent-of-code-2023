@@ -1,4 +1,3 @@
-//noinspection RsDetachedFile
 use std::collections::HashMap;
 
 use regex::bytes::Regex;
