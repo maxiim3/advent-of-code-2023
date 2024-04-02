@@ -5,7 +5,7 @@ const MAX_GREEN = 13
 const MAX_BLUE = 14
 const MAX_RED = 12
 
-const file = fs.readFileSync("./day-2/input.txt", {encoding: 'utf-8'});
+const file = fs.readFileSync("src/day2/input.txt", { encoding: 'utf-8' });
 const listOfGames = file.split("\n")
 // remove the extra line
 listOfGames.pop()
@@ -90,7 +90,7 @@ console.log(`total games : ${games.length}`)
 let eligibleGames = games.filter(game => game.isEligible)
 console.log(`Valid Games : ${eligibleGames.length}`)
 let total: number = 0
-for (const {gameID} of eligibleGames) {
+for (const { gameID } of eligibleGames) {
     total += gameID
 }
 console.log("total of eligible games", total)
