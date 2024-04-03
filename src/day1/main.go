@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
-
-	"github.com/maxiim3/aoc2023/src/fileutils"
 )
 
 func main() {
@@ -122,9 +121,10 @@ func mergeDigits(nums []string) int {
 
 		digits, err := strconv.Atoi(fmt.Sprint(first, last))
 
-	if err != nil {
-		panic(err)
-	}
+		if err != nil {
+			panic(err)
+		}
 
-	return digits
+		return digits
+	}
 }
