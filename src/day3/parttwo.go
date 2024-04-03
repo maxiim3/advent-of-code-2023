@@ -30,7 +30,11 @@ func parttwo() {
 		for v := 0; v < rowsize; v++ {
 			item := matrix[k][v]
 			fmt.Println("parsing: ", item.value, "{", k, ";", v, "}")
-			if item.isSymbol {
+			if item.value == "*" {
+				fmt.Println("is Symbol :", item.value)
+			}
+			if item.value == "*" {
+				item.isSymbol = true
 				gear := Gear{
 					partNums: []uint64{},
 					x:        item.x,

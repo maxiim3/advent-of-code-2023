@@ -12,7 +12,7 @@ func partone() {
 	fmt.Println("")
 	fmt.Println("\tPart One is on...")
 
-	f := fileutils.ParseFile("./src/day3/input-sample.txt")
+	f := fileutils.ParseFile("./src/day3/input.txt")
 
 	var matrix [][]Item
 
